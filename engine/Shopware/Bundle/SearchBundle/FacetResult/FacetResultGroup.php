@@ -38,22 +38,22 @@ class FacetResultGroup extends Extendable implements FacetResultInterface
     /**
      * @var FacetResultInterface[]
      */
-    private $facetResults;
+    protected $facetResults;
 
     /**
      * @var string
      */
-    private $facetName;
+    protected $facetName;
 
     /**
      * @var string
      */
-    private $label;
+    protected $label;
 
     /**
      * @var string|null
      */
-    private $template = null;
+    protected $template;
 
     /**
      * @param FacetResultInterface[] $facetResults
@@ -122,5 +122,13 @@ class FacetResultGroup extends Extendable implements FacetResultInterface
     public function setFacetResults(array $facetResults)
     {
         $this->facetResults = $facetResults;
+    }
+
+    /**
+     * @param null|string $template
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
     }
 }

@@ -1,22 +1,24 @@
 {block name="frontend_listing_box_article_includes"}
 
-    {if $productBoxLayout == 'minimal'}
-        {include file="frontend/listing/product-box/box-minimal.tpl"}
+	{$templateName = ''}
 
-    {elseif $productBoxLayout == 'image'}
-        {include file="frontend/listing/product-box/box-big-image.tpl"}
+	{if $productBoxLayout == 'minimal'}
+		{$templateName = 'frontend/listing/product-box/box-minimal.tpl'}
+	{elseif $productBoxLayout == 'image'}
+		{$templateName = 'frontend/listing/product-box/box-big-image.tpl'}
+	{elseif $productBoxLayout == 'slider'}
+		{$templateName = 'frontend/listing/product-box/box-product-slider.tpl'}
+	{elseif $productBoxLayout == 'emotion'}
+		{$templateName = 'frontend/listing/product-box/box-emotion.tpl'}
+	{elseif $productBoxLayout == 'list'}
+		{$templateName = 'frontend/listing/product-box/box-list.tpl'}
+	{/if}
 
-    {elseif $productBoxLayout == 'slider'}
-        {include file="frontend/listing/product-box/box-product-slider.tpl"}
-
-    {elseif $productBoxLayout == 'emotion'}
-        {include file="frontend/listing/product-box/box-emotion.tpl"}
-    {elseif $productBoxLayout == 'list'}
-        {include file="frontend/listing/product-box/box-list.tpl"}
-
-    {else}
-        {block name="frontend_listing_box_article_includes_additional"}
-            {include file="frontend/listing/product-box/box-basic.tpl" productBoxLayout="basic"}
-        {/block}
-    {/if}
+	{if $templateName == ''}
+		{block name="frontend_listing_box_article_includes_additional"}
+			{include file="frontend/listing/product-box/box-basic.tpl" productBoxLayout="basic"}
+		{/block}
+	{else}
+		{include file=$templateName}
+	{/if}
 {/block}

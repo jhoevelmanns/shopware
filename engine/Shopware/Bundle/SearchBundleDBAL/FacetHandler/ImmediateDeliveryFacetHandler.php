@@ -28,8 +28,9 @@ use Shopware\Bundle\SearchBundle\Criteria;
 use Shopware\Bundle\SearchBundle\Facet;
 use Shopware\Bundle\SearchBundle\FacetInterface;
 use Shopware\Bundle\SearchBundle\FacetResult\BooleanFacetResult;
+use Shopware\Bundle\SearchBundle\FacetResultInterface;
 use Shopware\Bundle\SearchBundleDBAL\ConditionHandler\ImmediateDeliveryConditionHandler;
-use Shopware\Bundle\SearchBundleDBAL\FacetHandlerInterface;
+use Shopware\Bundle\SearchBundleDBAL\PartialFacetHandlerInterface;
 use Shopware\Bundle\SearchBundleDBAL\QueryBuilderFactoryInterface;
 use Shopware\Bundle\StoreFrontBundle\Struct\ShopContextInterface;
 use Shopware\Components\QueryAliasMapper;
@@ -39,7 +40,7 @@ use Shopware\Components\QueryAliasMapper;
  *
  * @copyright Copyright (c) shopware AG (http://www.shopware.de)
  */
-class ImmediateDeliveryFacetHandler implements FacetHandlerInterface
+class ImmediateDeliveryFacetHandler implements PartialFacetHandlerInterface
 {
     /**
      * @var QueryBuilderFactoryInterface
@@ -75,25 +76,20 @@ class ImmediateDeliveryFacetHandler implements FacetHandlerInterface
     }
 
     /**
-     * Generates the facet data for the passed query, criteria and context object.
+     * @param FacetInterface       $facet
+     * @param Criteria             $reverted
+     * @param Criteria             $criteria
+     * @param ShopContextInterface $context
      *
-     * @param FacetInterface|Facet\ShippingFreeFacet $facet
-     * @param Criteria                               $criteria
-     * @param ShopContextInterface                   $context
-     *
-     * @return BooleanFacetResult
+     * @return FacetResultInterface
      */
-    public function generateFacet(
+    public function generatePartialFacet(
         FacetInterface $facet,
+        Criteria $reverted,
         Criteria $criteria,
         ShopContextInterface $context
     ) {
-        $queryCriteria = clone $criteria;
-        $queryCriteria->resetConditions();
-        $queryCriteria->resetSorting();
-
-        $query = $this->queryBuilderFactory->createQuery($queryCriteria, $context);
-
+        $query = $this->queryBuilderFactory->createQuery($reverted, $context);
         $query->resetQueryPart('orderBy');
         $query->resetQueryPart('groupBy');
 
@@ -122,11 +118,18 @@ class ImmediateDeliveryFacetHandler implements FacetHandlerInterface
             return null;
         }
 
+        /** @var Facet\ImmediateDeliveryFacet $facet */
+        if (!empty($facet->getLabel())) {
+            $label = $facet->getLabel();
+        } else {
+            $label = $this->snippetNamespace->get($facet->getName(), 'Immediate delivery');
+        }
+
         return new BooleanFacetResult(
             $facet->getName(),
             $this->fieldName,
             $criteria->hasCondition($facet->getName()),
-            $this->snippetNamespace->get($facet->getName(), 'Immediate delivery')
+            $label
         );
     }
 

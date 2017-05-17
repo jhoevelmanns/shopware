@@ -113,6 +113,9 @@ class PriceFacetHandler implements HandlerInterface, ResultHydratorInterface
         if ($data['count'] <= 0) {
             return;
         }
+        if ($data['min'] == $data['max']) {
+            return;
+        }
 
         $criteriaPart = $this->createFacet(
             $criteria,
@@ -140,15 +143,21 @@ class PriceFacetHandler implements HandlerInterface, ResultHydratorInterface
             $activeMax = $condition->getMaxPrice();
         }
 
-        $label = $this->snippetManager
-            ->getNamespace('frontend/listing/facet_labels')
-            ->get('price', 'Price');
-
         if (!$minFieldName = $this->queryAliasMapper->getShortAlias('priceMin')) {
             $minFieldName = 'priceMin';
         }
         if (!$maxFieldName = $this->queryAliasMapper->getShortAlias('priceMax')) {
             $maxFieldName = 'priceMax';
+        }
+
+        /** @var PriceFacet $facet */
+        $facet = $criteria->getFacet('price');
+        if ($facet && !empty($facet->getLabel())) {
+            $label = $facet->getLabel();
+        } else {
+            $label = $this->snippetManager
+                ->getNamespace('frontend/listing/facet_labels')
+                ->get('price', 'Price');
         }
 
         return new RangeFacetResult(

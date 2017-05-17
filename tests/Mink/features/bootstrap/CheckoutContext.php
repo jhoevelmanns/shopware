@@ -685,7 +685,7 @@ class CheckoutContext extends SubContext
     {
         /** @var Connection $dbal */
         $dbal = $this->getService('dbal_connection');
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             INSERT INTO s_core_tax_rules (areaID, countryID, stateID, groupID, customer_groupID, tax, name, active)
             VALUES (3, 23, null, 1, 1, 33, 'Austria', 1)
 EOD;
@@ -699,7 +699,7 @@ EOD;
     {
         /** @var Connection $dbal */
         $dbal = $this->getService('dbal_connection');
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             DELETE FROM s_core_tax_rules
             WHERE name = 'Austria'
 EOD;
@@ -720,7 +720,7 @@ EOD;
 EOD;
         $dbal->query($sql);
 
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             SET @dispatchId = (SELECT id FROM `s_premium_dispatch` WHERE `name` = 'Sonderaufschlag');
         
             INSERT INTO `s_premium_dispatch_countries` (`dispatchID`, `countryID`)
@@ -728,13 +728,13 @@ EOD;
 EOD;
         $dbal->query($sql);
 
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             INSERT INTO `s_premium_dispatch_paymentmeans` (`dispatchID`, `paymentID`)
             VALUES (@dispatchId, 5);
 EOD;
         $dbal->query($sql);
 
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             INSERT INTO `s_premium_shippingcosts` (`id`, `from`, `value`, `factor`, `dispatchID`)
             VALUES (null, '0.000', '150.00', '0.00', @dispatchId);
 EOD;
@@ -748,7 +748,7 @@ EOD;
     {
         /** @var Connection $dbal */
         $dbal = $this->getService('dbal_connection');
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             SET @dispatchId = (SELECT id FROM `s_premium_dispatch` WHERE `name` = 'Sonderaufschlag');
             
             DELETE FROM `s_premium_dispatch`
@@ -756,13 +756,13 @@ EOD;
 EOD;
         $dbal->query($sql);
 
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             DELETE FROM `s_premium_dispatch_countries`
             WHERE dispatchID = '@dispatchId'
 EOD;
         $dbal->query($sql);
 
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             DELETE FROM `s_premium_dispatch_paymentmeans`
             WHERE dispatchID = '@dispatchId'
 EOD;
@@ -776,7 +776,7 @@ EOD;
     {
         /** @var Connection $dbal */
         $dbal = Shopware()->Container()->get('dbal_connection');
-        $sql = <<<EOD
+        $sql = <<<'EOD'
 INSERT INTO `s_user`
 (`password`, `encoder`, `email`, `active`, `accountmode`, `confirmationkey`, `paymentID`, `firstlogin`, `lastlogin`, `sessionID`, `newsletter`, `validation`, `affiliate`, `customergroup`, `paymentpreset`, `language`, `subshopID`, `referer`, `pricegroupID`, `internalcomment`, `failedlogins`, `lockeduntil`, `default_billing_address_id`, `default_shipping_address_id`, `title`, `salutation`, `firstname`, `lastname`, `birthday`, `customernumber`)
 VALUES
@@ -842,7 +842,7 @@ EOD;
     {
         /** @var Connection $dbal */
         $dbal = $this->getService('dbal_connection');
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             UPDATE s_core_paymentmeans SET debit_percent = 10 WHERE id = 5;
 EOD;
         $dbal->query($sql);
@@ -855,7 +855,7 @@ EOD;
     {
         /** @var Connection $dbal */
         $dbal = $this->getService('dbal_connection');
-        $sql = <<<"EOD"
+        $sql = <<<'EOD'
             UPDATE s_core_paymentmeans SET debit_percent = 0 WHERE id = 5;
 EOD;
         $dbal->query($sql);

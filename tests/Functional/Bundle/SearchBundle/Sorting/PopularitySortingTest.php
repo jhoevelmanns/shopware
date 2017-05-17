@@ -30,6 +30,9 @@ use Shopware\Bundle\StoreFrontBundle\Struct\ShopContext;
 use Shopware\Models\Category\Category;
 use Shopware\Tests\Functional\Bundle\StoreFrontBundle\TestCase;
 
+/**
+ * @group elasticSearch
+ */
 class PopularitySortingTest extends TestCase
 {
     public function testAscendingSorting()
@@ -79,7 +82,7 @@ class PopularitySortingTest extends TestCase
                 'third' => 1,
                 'fourth' => 20,
             ],
-            ['fourth', 'second', 'first', 'third'],
+            ['second', 'fourth', 'first', 'third'],
             null,
             [],
             [],

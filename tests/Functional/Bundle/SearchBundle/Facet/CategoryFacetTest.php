@@ -24,6 +24,8 @@
 
 namespace Shopware\Tests\Functional\Bundle\SearchBundle\Facet;
 
+use Shopware\Bundle\SearchBundle\Condition\CategoryCondition;
+use Shopware\Bundle\SearchBundle\Criteria;
 use Shopware\Bundle\SearchBundle\Facet\CategoryFacet;
 use Shopware\Bundle\SearchBundle\FacetResult\TreeFacetResult;
 use Shopware\Bundle\SearchBundle\FacetResult\TreeItem;
@@ -31,6 +33,9 @@ use Shopware\Bundle\StoreFrontBundle\Struct\ShopContext;
 use Shopware\Models\Category\Category;
 use Shopware\Tests\Functional\Bundle\StoreFrontBundle\TestCase;
 
+/**
+ * @group elasticSearch
+ */
 class CategoryFacetTest extends TestCase
 {
     public function testSingleProductInFacet()
@@ -69,14 +74,7 @@ class CategoryFacetTest extends TestCase
 
         /** @var TreeItem $value */
         $value = $facet->getValues()[0];
-        $this->assertEquals('Deutsch', $value->getLabel());
-
-        $value = $value->getValues()[0];
         $this->assertEquals('firstLevel', $value->getLabel());
-        $this->assertTrue($value->isActive());
-
-        $value = $value->getValues()[0];
-        $this->assertEquals('secondLevel', $value->getLabel());
     }
 
     public function testMultipleCategories()
@@ -117,9 +115,6 @@ class CategoryFacetTest extends TestCase
         $this->assertCount(1, $facet->getValues());
 
         $value = $facet->getValues()[0];
-        $this->assertEquals('Deutsch', $value->getLabel());
-
-        $value = $value->getValues()[0];
         $this->assertEquals('firstLevel', $value->getLabel());
         $this->assertTrue($value->isActive());
 
@@ -159,7 +154,7 @@ class CategoryFacetTest extends TestCase
             ['first', 'second', 'third'],
             $subCategory1,
             [],
-            [new CategoryFacet()]
+            [new CategoryFacet(null, 4)]
         );
 
         $facet = $result->getFacets();
@@ -172,9 +167,6 @@ class CategoryFacetTest extends TestCase
 
         /** @var TreeItem $value */
         $value = $facet->getValues()[0];
-        $this->assertEquals('Deutsch', $value->getLabel());
-
-        $value = $value->getValues()[0];
         $this->assertEquals('firstLevel', $value->getLabel());
 
         $value = $value->getValues()[0];
@@ -192,5 +184,27 @@ class CategoryFacetTest extends TestCase
         $additionally = null
     ) {
         return parent::getProduct($number, $context, $additionally);
+    }
+
+    /**
+     * @param Criteria $criteria
+     * @param Category $category
+     * @param $conditions
+     * @param ShopContext $context
+     */
+    protected function addCategoryBaseCondition(
+        Criteria $criteria,
+        Category $category,
+        $conditions,
+        ShopContext $context
+    ) {
+        if ($category) {
+            $criteria->addBaseCondition(
+                new CategoryCondition([$category->getId()])
+            );
+            $criteria->addCondition(
+                new CategoryCondition([$category->getId()])
+            );
+        }
     }
 }

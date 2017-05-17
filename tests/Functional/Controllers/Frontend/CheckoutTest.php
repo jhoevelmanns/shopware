@@ -62,7 +62,7 @@ class Shopware_Tests_Controllers_Frontend_CheckoutTest extends Enlight_Component
      */
     public function testAddBasketArticle()
     {
-        $sessionId = $this->addBasketArticle(self::USER_AGENT);
+        $sessionId = $this->addBasketArticle(include __DIR__ . '/fixtures/UserAgent.php');
         $this->assertNotEmpty($sessionId);
         $basketId = Shopware()->Db()->fetchOne(
             'SELECT id FROM s_order_basket WHERE sessionID = ?',
@@ -71,23 +71,6 @@ class Shopware_Tests_Controllers_Frontend_CheckoutTest extends Enlight_Component
         $this->assertNotEmpty($basketId);
 
         Shopware()->Modules()->Basket()->sDeleteBasket();
-    }
-
-    /**
-     * fires the add article request with the given user agent
-     *
-     * @param $userAgent
-     *
-     * @param int $quantity
-     * @return string | session id
-     */
-    private function addBasketArticle($userAgent, $quantity = 1)
-    {
-        $this->reset();
-        $this->Request()->setHeader('User-Agent', $userAgent);
-        $this->Request()->setParam('sQuantity', $quantity);
-        $this->dispatch('/checkout/addArticle/sAdd/' . self::ARTICLE_NUMBER);
-        return Shopware()->Container()->get('SessionID');
     }
 
     /**
@@ -116,6 +99,7 @@ class Shopware_Tests_Controllers_Frontend_CheckoutTest extends Enlight_Component
      * Order/Order::calculateInvoiceAmount (Which will be called when one changes / saves the order in the backend).
      *
      * Also covers a complete checkout process
+     *
      * @param bool $net
      */
     public function runCheckoutTest($net = false)
@@ -129,7 +113,7 @@ class Shopware_Tests_Controllers_Frontend_CheckoutTest extends Enlight_Component
         $this->assertNotEmpty($netCustomerGroup);
         Shopware()->Db()->query(
             'UPDATE s_user SET customergroup = ? WHERE id = 1',
-            array($netCustomerGroup)
+            [$netCustomerGroup]
         );
 
         // Simulate checkout in frontend
@@ -157,7 +141,7 @@ class Shopware_Tests_Controllers_Frontend_CheckoutTest extends Enlight_Component
         // Revert customer group
         Shopware()->Db()->query(
             'UPDATE s_user SET customergroup = ? WHERE id = 1',
-            array($previousCustomerGroup)
+            [$previousCustomerGroup]
         );
 
         // Fetch created order
@@ -175,8 +159,8 @@ class Shopware_Tests_Controllers_Frontend_CheckoutTest extends Enlight_Component
         $order->calculateInvoiceAmount();
 
         // Assert messages
-        $message = 'InvoiceAmount' . ($net ? ' (net shop)' : '') . ': ' . $previousInvoiceAmount .' from sBasket, '. $order->getInvoiceAmount() . ' from getInvoiceAmount';
-        $messageNet = 'InvoiceAmountNet' . ($net ? ' (net shop)' : '') . ': ' . $previousInvoiceAmountNet.' from sBasket, '. $order->getInvoiceAmountNet() . ' from getInvoiceAmountNet';
+        $message = 'InvoiceAmount' . ($net ? ' (net shop)' : '') . ': ' . $previousInvoiceAmount . ' from sBasket, ' . $order->getInvoiceAmount() . ' from getInvoiceAmount';
+        $messageNet = 'InvoiceAmountNet' . ($net ? ' (net shop)' : '') . ': ' . $previousInvoiceAmountNet . ' from sBasket, ' . $order->getInvoiceAmountNet() . ' from getInvoiceAmountNet';
 
         // Test that sBasket calculation matches calculateInvoiceAmount
         $this->assertEquals($order->getInvoiceAmount(), $previousInvoiceAmount, $message);
@@ -185,6 +169,7 @@ class Shopware_Tests_Controllers_Frontend_CheckoutTest extends Enlight_Component
 
     /**
      * Login as a frontend user
+     *
      * @throws Enlight_Exception
      * @throws Exception
      */
@@ -202,10 +187,28 @@ class Shopware_Tests_Controllers_Frontend_CheckoutTest extends Enlight_Component
         $shop->registerResources();
 
         Shopware()->Session()->Admin = true;
-        Shopware()->System()->_POST = array(
+        Shopware()->System()->_POST = [
             'email' => $user['email'],
             'passwordMD5' => $user['password'],
-        );
+        ];
         Shopware()->Modules()->Admin()->sLogin(true);
+    }
+
+    /**
+     * fires the add article request with the given user agent
+     *
+     * @param $userAgent
+     * @param int $quantity
+     *
+     * @return string | session id
+     */
+    private function addBasketArticle($userAgent, $quantity = 1)
+    {
+        $this->reset();
+        $this->Request()->setHeader('User-Agent', $userAgent);
+        $this->Request()->setParam('sQuantity', $quantity);
+        $this->dispatch('/checkout/addArticle/sAdd/' . self::ARTICLE_NUMBER);
+
+        return Shopware()->Container()->get('SessionID');
     }
 }

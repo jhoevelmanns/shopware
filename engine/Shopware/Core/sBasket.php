@@ -608,6 +608,22 @@ class sBasket
             return ['sErrorFlag' => true, 'sErrorMessages' => $sErrorMessages];
         }
 
+        $streams = array_filter(explode('|', $voucherDetails['customer_stream_ids']));
+
+        if (!empty($streams)) {
+            $context = $this->contextService->getShopContext();
+            $allowed = array_intersect($context->getActiveCustomerStreamIds(), $streams);
+
+            if (empty($allowed)) {
+                $message = $this->snippetManager->getNamespace('frontend/basket/internalMessages')->get(
+                    'VoucherFailureCustomerStreams',
+                    'This voucher is not available for you'
+                );
+
+                return ['sErrorFlag' => true, 'sErrorMessages' => [$message]];
+            }
+        }
+
         if ($voucherDetails['id']) {
             // If we have voucher details, its a reusable code
             // We need to check how many times it has already been used
@@ -1139,15 +1155,6 @@ class sBasket
             'AmountWithTaxNumeric' => $totalAmountWithTaxNumeric,
         ];
 
-        $lastArticle = $this->session->get('sLastArticle');
-        if (!empty($lastArticle)) {
-            $result['sLastActiveArticle'] = [
-                'id' => $lastArticle,
-                'link' => $this->config->get('sBASEFILE')
-                    . '?sViewport=detail&sDetails=' . $lastArticle,
-            ];
-        }
-
         if (!empty($result['content'])) {
             foreach ($result['content'] as $key => $value) {
                 if (!empty($value['amountWithTax'])) {
@@ -1673,7 +1680,8 @@ class sBasket
                 details.articleID as voucherId,
                 details.articleordernumber AS voucherOrderNumber,
                 vouchers.numorder AS maxPerUser,
-                vouchers.numberofunits AS maxGlobal
+                vouchers.numberofunits AS maxGlobal,
+                vouchers.customer_stream_ids
             FROM s_emarketing_vouchers AS vouchers
             LEFT JOIN s_order_details details ON vouchers.ordercode = details.articleordernumber
             LEFT JOIN s_order AS orders ON details.orderID = orders.id

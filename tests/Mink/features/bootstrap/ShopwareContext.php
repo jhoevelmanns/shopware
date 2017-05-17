@@ -228,7 +228,7 @@ class ShopwareContext extends SubContext
      */
     public function theEmotionWorldHasLoaded()
     {
-        $this->getSession()->wait(5000, "$('.emotion--element').length > 0");
+        $this->getSession()->wait(15000, "$($(':plugin-swEmotionLoader').get(0)).data('plugin_swEmotionLoader').isLoading == false");
     }
 
     /**
@@ -360,7 +360,7 @@ class ShopwareContext extends SubContext
         /** @var \Shopware\Tests\Mink\Element\ManufacturerSlider $slider */
         $slider = $this->getMultipleElement($page, 'ManufacturerSlider', 1);
 
-        $page->checkSlider($slider, $manufacturers->getHash());
+        $page->checkManufacturerSlider($slider, $manufacturers->getHash());
     }
 
     /**
@@ -385,5 +385,13 @@ class ShopwareContext extends SubContext
     public function iTheLanguageShouldBe($language)
     {
         Helper::setCurrentLanguage($language);
+    }
+
+    /**
+     * @When I scroll to the bottom of the page
+     */
+    public function iScrollToTheBottomOfThePage()
+    {
+        $this->getDriver()->executeScript('window.scrollTo(0, document.body.scrollHeight);');
     }
 }

@@ -78,6 +78,11 @@ class Criteria implements \JsonSerializable
     /**
      * @var bool
      */
+    private $generatePartialFacets = false;
+
+    /**
+     * @var bool
+     */
     private $fetchCount = true;
 
     /**
@@ -451,6 +456,30 @@ class Criteria implements \JsonSerializable
     public function getBaseConditions()
     {
         return $this->baseConditions;
+    }
+
+    /**
+     * @return bool
+     */
+    public function generatePartialFacets()
+    {
+        return $this->generatePartialFacets;
+    }
+
+    /**
+     * @param bool $generatePartialFacets
+     */
+    public function setGeneratePartialFacets($generatePartialFacets)
+    {
+        $this->generatePartialFacets = $generatePartialFacets;
+    }
+
+    /**
+     * @return ConditionInterface[]
+     */
+    public function getUserConditions()
+    {
+        return $this->conditions;
     }
 
     /**

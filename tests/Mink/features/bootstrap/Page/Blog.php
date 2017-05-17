@@ -83,13 +83,7 @@ class Blog extends Page implements HelperSelectorInterface
      */
     public function writeComment(array $data)
     {
-        $writeCommentLink = $this->getSession()
-            ->getPage()
-            ->find('css', '.blog--comments-form a.btn--create-entry');
-
-        if ($writeCommentLink) {
-            $writeCommentLink->click();
-        }
+        $this->openCommentSection();
 
         Helper::fillForm($this, 'commentForm', $data);
 
@@ -128,6 +122,17 @@ class Blog extends Page implements HelperSelectorInterface
             );
         }
         Helper::throwException($messages);
+    }
+
+    public function openCommentSection()
+    {
+        $writeCommentLink = $this->getSession()
+            ->getPage()
+            ->find('css', '.blog--comments-form a.btn--create-entry');
+
+        if ($writeCommentLink) {
+            $writeCommentLink->click();
+        }
     }
 
     /**

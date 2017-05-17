@@ -5221,40 +5221,40 @@ TRUNCATE TABLE `s_core_config_mails_attachments`;
 TRUNCATE TABLE `s_core_config_mails_attributes`;
 
 TRUNCATE TABLE `s_core_countries`;
-INSERT INTO `s_core_countries` (`id`, `countryname`, `countryiso`, `areaID`, `countryen`, `position`, `notice`, `shippingfree`, `taxfree`, `taxfree_ustid`, `taxfree_ustid_checked`, `active`, `iso3`, `display_state_in_registration`, `force_state_in_registration`) VALUES
-(2, 'Deutschland', 'DE', 1, 'GERMANY', 1, '', 0, 0, 0, 0, 1, 'DEU', 0, 0),
-(3, 'Arabische Emirate', 'AE', 2, 'ARAB EMIRATES', 10, '', 0, 0, 0, 0, 1, 'ARE', 0, 0),
-(4, 'Australien', 'AU', 2, 'AUSTRALIA', 10, '', 0, 0, 0, 0, 1, 'AUS', 0, 0),
-(5, 'Belgien', 'BE', 3, 'BELGIUM', 10, '', 0, 0, 0, 0, 1, 'BEL', 0, 0),
-(7, 'Dänemark', 'DK', 3, 'DENMARK', 10, '', 0, 0, 0, 0, 1, 'DNK', 0, 0),
-(8, 'Finnland', 'FI', 3, 'FINLAND', 10, '', 0, 0, 0, 0, 1, 'FIN', 0, 0),
-(9, 'Frankreich', 'FR', 3, 'FRANCE', 10, '', 0, 0, 0, 0, 0, 'FRA', 0, 0),
-(10, 'Griechenland', 'GR', 3, 'GREECE', 10, '', 0, 0, 0, 0, 0, 'GRC', 0, 0),
-(11, 'Großbritannien', 'GB', 3, 'GREAT BRITAIN', 10, '', 0, 0, 0, 0, 0, 'GBR', 0, 0),
-(12, 'Irland', 'IE', 3, 'IRELAND', 10, '', 0, 0, 0, 0, 0, 'IRL', 0, 0),
-(13, 'Island', 'IS', 3, 'ICELAND', 10, '', 0, 0, 0, 0, 0, 'ISL', 0, 0),
-(14, 'Italien', 'IT', 3, 'ITALY', 10, '', 0, 0, 0, 0, 1, 'ITA', 0, 0),
-(15, 'Japan', 'JP', 2, 'JAPAN', 10, '', 0, 0, 0, 0, 0, 'JPN', 0, 0),
-(16, 'Kanada', 'CA', 2, 'CANADA', 10, '', 0, 0, 0, 0, 0, 'CAN', 0, 0),
-(18, 'Luxemburg', 'LU', 3, 'LUXEMBOURG', 10, '', 0, 0, 0, 0, 0, 'LUX', 0, 0),
-(20, 'Namibia', 'NA', 2, 'NAMIBIA', 10, '', 0, 0, 0, 0, 0, 'NAM', 0, 0),
-(21, 'Niederlande', 'NL', 3, 'NETHERLANDS', 10, '', 0, 0, 0, 0, 1, 'NLD', 0, 0),
-(22, 'Norwegen', 'NO', 3, 'NORWAY', 10, '', 0, 0, 0, 0, 0, 'NOR', 0, 0),
-(23, 'Österreich', 'AT', 3, 'AUSTRIA', 1, '', 0, 0, 0, 0, 1, 'AUT', 0, 0),
-(24, 'Portugal', 'PT', 3, 'PORTUGAL', 10, '', 0, 0, 0, 0, 0, 'PRT', 0, 0),
-(25, 'Schweden', 'SE', 3, 'SWEDEN', 10, '', 0, 0, 0, 0, 0, 'SWE', 0, 0),
-(26, 'Schweiz', 'CH', 3, 'SWITZERLAND', 10, '', 0, 1, 0, 0, 1, 'CHE', 0, 0),
-(27, 'Spanien', 'ES', 3, 'SPAIN', 10, '', 0, 0, 0, 0, 1, 'ESP', 0, 0),
-(28, 'USA', 'US', 2, 'USA', 10, '', 0, 0, 0, 0, 0, 'USA', 0, 0),
-(29, 'Liechtenstein', 'LI', 3, 'LIECHTENSTEIN', 10, '', 0, 0, 0, 0, 0, 'LIE', 0, 0),
-(30, 'Polen', 'PL', 3, 'POLAND', 10, '', 0, 0, 0, 0, 0, 'POL', 0, 0),
-(31, 'Ungarn', 'HU', 3, 'HUNGARY', 10, '', 0, 0, 0, 0, 0, 'HUN', 0, 0),
-(32, 'Türkei', 'TR', 2, 'TURKEY', 10, '', 0, 0, 0, 0, 0, 'TUR', 0, 0),
-(33, 'Tschechien', 'CZ', 3, 'CZECH REPUBLIC', 10, '', 0, 0, 0, 0, 0, 'CZE', 0, 0),
-(34, 'Slowakei', 'SK', 3, 'SLOVAKIA', 10, '', 0, 0, 0, 0, 0, 'SVK', 0, 0),
-(35, 'Rum&auml;nien', 'RO', 3, 'ROMANIA', 10, '', 0, 0, 0, 0, 0, 'ROU', 0, 0),
-(36, 'Brasilien', 'BR', 2, 'BRAZIL', 10, '', 0, 0, 0, 0, 0, 'BRA', 0, 0),
-(37, 'Israel', 'IL', 2, 'ISRAEL', 10, '', 0, 0, 0, 0, 0, 'ISR', 0, 0);
+INSERT INTO `s_core_countries` (`id`, `countryname`, `countryiso`, `areaID`, `countryen`, `position`, `notice`,  `taxfree`, `taxfree_ustid`, `taxfree_ustid_checked`, `active`, `iso3`, `display_state_in_registration`, `force_state_in_registration`) VALUES
+(2, 'Deutschland', 'DE', 1, 'GERMANY', 1, '', 0, 0, 0, 1, 'DEU', 0, 0),
+(3, 'Arabische Emirate', 'AE', 2, 'ARAB EMIRATES', 10, '', 0, 0, 0, 1, 'ARE', 0, 0),
+(4, 'Australien', 'AU', 2, 'AUSTRALIA', 10, '', 0, 0, 0, 1, 'AUS', 0, 0),
+(5, 'Belgien', 'BE', 3, 'BELGIUM', 10, '', 0, 0, 0, 1, 'BEL', 0, 0),
+(7, 'Dänemark', 'DK', 3, 'DENMARK', 10, '', 0, 0, 0, 1, 'DNK', 0, 0),
+(8, 'Finnland', 'FI', 3, 'FINLAND', 10, '', 0, 0, 0, 1, 'FIN', 0, 0),
+(9, 'Frankreich', 'FR', 3, 'FRANCE', 10, '', 0, 0, 0, 0, 'FRA', 0, 0),
+(10, 'Griechenland', 'GR', 3, 'GREECE', 10, '', 0, 0, 0, 0, 'GRC', 0, 0),
+(11, 'Großbritannien', 'GB', 3, 'GREAT BRITAIN', 10, '', 0, 0, 0, 0, 'GBR', 0, 0),
+(12, 'Irland', 'IE', 3, 'IRELAND', 10, '', 0, 0, 0, 0, 'IRL', 0, 0),
+(13, 'Island', 'IS', 3, 'ICELAND', 10, '', 0, 0, 0, 0, 'ISL', 0, 0),
+(14, 'Italien', 'IT', 3, 'ITALY', 10, '', 0, 0, 0, 1, 'ITA', 0, 0),
+(15, 'Japan', 'JP', 2, 'JAPAN', 10, '', 0, 0, 0, 0, 'JPN', 0, 0),
+(16, 'Kanada', 'CA', 2, 'CANADA', 10, '', 0, 0, 0, 0, 'CAN', 0, 0),
+(18, 'Luxemburg', 'LU', 3, 'LUXEMBOURG', 10, '', 0, 0, 0, 0, 'LUX', 0, 0),
+(20, 'Namibia', 'NA', 2, 'NAMIBIA', 10, '', 0, 0, 0, 0, 'NAM', 0, 0),
+(21, 'Niederlande', 'NL', 3, 'NETHERLANDS', 10, '', 0, 0, 0, 1, 'NLD', 0, 0),
+(22, 'Norwegen', 'NO', 3, 'NORWAY', 10, '', 0, 0, 0, 0, 'NOR', 0, 0),
+(23, 'Österreich', 'AT', 3, 'AUSTRIA', 1, '', 0, 0, 0, 1, 'AUT', 0, 0),
+(24, 'Portugal', 'PT', 3, 'PORTUGAL', 10, '', 0, 0, 0, 0, 'PRT', 0, 0),
+(25, 'Schweden', 'SE', 3, 'SWEDEN', 10, '', 0, 0, 0, 0, 'SWE', 0, 0),
+(26, 'Schweiz', 'CH', 3, 'SWITZERLAND', 10, '', 1, 0, 0, 1, 'CHE', 0, 0),
+(27, 'Spanien', 'ES', 3, 'SPAIN', 10, '', 0, 0, 0, 1, 'ESP', 0, 0),
+(28, 'USA', 'US', 2, 'USA', 10, '', 0, 0, 0, 0, 'USA', 0, 0),
+(29, 'Liechtenstein', 'LI', 3, 'LIECHTENSTEIN', 10, '', 0, 0, 0, 0, 'LIE', 0, 0),
+(30, 'Polen', 'PL', 3, 'POLAND', 10, '', 0, 0, 0, 0, 'POL', 0, 0),
+(31, 'Ungarn', 'HU', 3, 'HUNGARY', 10, '', 0, 0, 0, 0, 'HUN', 0, 0),
+(32, 'Türkei', 'TR', 2, 'TURKEY', 10, '', 0, 0, 0, 0, 'TUR', 0, 0),
+(33, 'Tschechien', 'CZ', 3, 'CZECH REPUBLIC', 10, '', 0, 0, 0, 0, 'CZE', 0, 0),
+(34, 'Slowakei', 'SK', 3, 'SLOVAKIA', 10, '', 0, 0, 0, 0, 'SVK', 0, 0),
+(35, 'Rum&auml;nien', 'RO', 3, 'ROMANIA', 10, '', 0, 0, 0, 0, 'ROU', 0, 0),
+(36, 'Brasilien', 'BR', 2, 'BRAZIL', 10, '', 0, 0, 0, 0, 'BRA', 0, 0),
+(37, 'Israel', 'IL', 2, 'ISRAEL', 10, '', 0, 0, 0, 0, 'ISR', 0, 0);
 
 TRUNCATE TABLE `s_core_countries_areas`;
 INSERT INTO `s_core_countries_areas` (`id`, `name`, `active`) VALUES
@@ -6136,7 +6136,7 @@ TRUNCATE TABLE `s_core_units`;
 INSERT INTO `s_core_units` (`id`, `unit`, `description`) VALUES
 (1, 'l', 'Liter'),
 (2, 'g', 'Gramm'),
-(5, 'lfm', 'lfm'),
+(5, 'lfm', 'Laufende(r) Meter'),
 (6, 'kg', 'Kilogramm'),
 (8, 'Paket(e)', 'Paket(e)'),
 (9, 'Stck.', 'Stück'),
@@ -6857,7 +6857,7 @@ INSERT INTO `s_emotion_element_value` (`id`, `emotionID`, `elementID`, `componen
 (3606, 2, 1297, 5, 10, 'media/image/genuss_tees_banner.jpg'),
 (3607, 2, 1297, 5, 11, '11'),
 (3608, 2, 1298, 11, 36, 'selected_article'),
-(3609, 2, 1298, 11, 37, '[{"position":0,"name":"Special Finish Lagerkorn X.O. 32%","ordernumber":"SW10009","articleId":9,"path":""},{"position":1,"name":"M\\u00fcnsterl\\u00e4nder Lagerkorn 32%","ordernumber":"SW10002.3","articleId":2,"path":""},{"position":2,"name":"Cigar Special 40%","ordernumber":"SW10006","articleId":6,"path":""},{"position":3,"name":"Pai Mu Tan Tee weiss","ordernumber":"SW10013","articleId":13,"path":""},{"position":4,"name":"Silver Yin Zhen Tee weiss","ordernumber":"SW10014","articleId":14,"path":""},{"position":5,"name":"LUNG CHING gr\\u00fcner Tee","ordernumber":"SW10015","articleId":15,"path":""}]'),
+(3609, 2, 1298, 11, 37, '|SW10009|SW10002.3|SW10006|SW10013|SW10014|SW10015|'),
 (3610, 2, 1298, 11, 38, '25'),
 (3611, 2, 1298, 11, 39, 'Unsere Top-Artikel'),
 (3612, 2, 1298, 11, 41, ''),
@@ -7033,7 +7033,8 @@ INSERT INTO `s_emotion_element_value` (`id`, `emotionID`, `elementID`, `componen
 (4270, 7, 1512, 6, 68, '17'),
 (4271, 6, 1409, 3, 65, 'top left'),
 (4272, 6, 1409, 3, 89, ''),
-(4273, 6, 1409, 3, 85, '');
+(4273, 6, 1409, 3, 85, ''),
+(4274, 1, 1023, 6, 68, '17');
 
 TRUNCATE TABLE `s_emotion_templates`;
 INSERT INTO `s_emotion_templates` (`id`, `name`, `file`) VALUES

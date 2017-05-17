@@ -58,7 +58,7 @@ class Shopware_Tests_Controllers_Backend_VoteTest extends Enlight_Components_Tes
         $data = Shopware()->Db()->fetchRow($sql, []);
 
         /* @var Enlight_Controller_Response_ResponseTestCase */
-        $this->dispatch('backend/vote/getVotes');
+        $this->dispatch('backend/vote/list');
         $this->assertTrue($this->View()->success);
 
         $this->assertNotNull($this->View()->data);
@@ -86,13 +86,13 @@ class Shopware_Tests_Controllers_Backend_VoteTest extends Enlight_Components_Tes
     public function testAnswerVote($data)
     {
         $data['answer'] = 'Test';
-        $data['answer_datum'] = date('Y-m-d H:i:s');
         $this->Request()->setMethod('POST')->setPost($data);
 
-        $this->dispatch('backend/vote/editVote');
+        $this->dispatch('backend/vote/update');
 
         $this->assertTrue($this->View()->success);
         $this->assertNotNull($this->View()->data);
+        $this->assertNotNull($this->View()->data['answer_date']);
     }
 
     /**
@@ -112,7 +112,7 @@ class Shopware_Tests_Controllers_Backend_VoteTest extends Enlight_Components_Tes
 
         $this->Request()->setMethod('POST')->setPost($data);
 
-        $this->dispatch('backend/vote/editVote');
+        $this->dispatch('backend/vote/update');
 
         $this->assertTrue($this->View()->success);
         $this->assertNotNull($this->View()->data);
@@ -128,10 +128,7 @@ class Shopware_Tests_Controllers_Backend_VoteTest extends Enlight_Components_Tes
     public function testDeleteVote($data)
     {
         $this->Request()->setMethod('POST')->setPost($data);
-
-        $this->dispatch('backend/vote/deleteVote');
-
+        $this->dispatch('backend/vote/delete');
         $this->assertTrue($this->View()->success);
-        $this->assertNotNull($this->View()->data);
     }
 }

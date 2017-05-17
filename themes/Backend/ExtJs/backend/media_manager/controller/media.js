@@ -44,7 +44,6 @@ Ext.define('Shopware.apps.MediaManager.controller.Media', {
      * @string
      */
     extend: 'Ext.app.Controller',
-
     snippets: {
         confirmMsgBox: {
             deleteTitle: '{s name=confirmMsgBox/deleteTitle}Delete media files{/s}',
@@ -77,6 +76,9 @@ Ext.define('Shopware.apps.MediaManager.controller.Media', {
     init: function() {
         var me = this;
 
+        me.settingRecord = me.getSettings();
+        me.restoreSettings();
+
         me.control({
             'mediamanager-album-tree': {
                 itemclick: me.onChangeMediaAlbum,
@@ -91,7 +93,7 @@ Ext.define('Shopware.apps.MediaManager.controller.Media', {
                 changePreviewSize: me.onChangePreviewSize
             },
             'mediamanager-media-view button[action=mediamanager-media-view-layout]': {
-                change: me.onChangeLayout
+                'layout-button-click': me.onChangeLayout
             },
             'mediamanager-media-view button[action=mediamanager-media-view-delete]': {
                 click: me.onDeleteMedia
@@ -110,6 +112,9 @@ Ext.define('Shopware.apps.MediaManager.controller.Media', {
             'mediamanager-selection-window textfield[action=mediamanager-selection-window-searchfield]': {
                 change: me.onSearchMedia
             },
+            'mediamanager-media-view combobox[action=perPageComboBox]': {
+                select: me.onSelectPerPage
+            },
             'mediamanager-media-grid': {
                 'showDetail': me.onShowDetails,
                 'edit': me.onGridEditLabel
@@ -117,6 +122,96 @@ Ext.define('Shopware.apps.MediaManager.controller.Media', {
         });
 
         me.callParent(arguments);
+    },
+
+    getSettings:function() {
+        var me = this,
+            settingStore = me.subApplication.getStore('Setting'),
+            settingRecord = null,
+            grid = me.getMediaGrid(),
+            view = me.getMediaView();
+
+        settingStore.load(function() {
+            if (!settingStore.getAt(0)) {
+                /**
+                 * Initialize the record with default values provided by the view and the mediaGrid.
+                 */
+                settingRecord = Ext.create('Shopware.apps.MediaManager.model.Setting', {
+                    displayType: view.selectedLayout,
+                    itemsPerPage: view.mediaStore.pageSize,
+                    tableThumbnailSize: 16,
+                    gridThumbnailSize: 72
+                });
+                settingStore.add(settingRecord);
+            }
+        });
+
+        return settingStore.getAt(0);
+    },
+
+    restoreSettings: function() {
+        var me = this,
+            view = me.getMediaView(),
+            grid = me.getMediaGrid(),
+            displayTypeValue = me.settingRecord.get('displayType'),
+            pageSizeCombo = view.pageSize,
+            thumbnailSize = me.settingRecord.get(displayTypeValue + 'ThumbnailSize'),
+            itemsPerPage = me.settingRecord.get('itemsPerPage'),
+            storeData;
+
+        view.mediaStore.pageSize = itemsPerPage;
+        view.thumbnailSize = thumbnailSize;
+        view.mediaViewContainer.add(view.createMediaView());
+
+        /**
+         * Find the item which matches the settingRecord value
+         */
+        view.displayTypeBtn.menu.items.each(function(item) {
+            if (item.layout == displayTypeValue) {
+                view.displayTypeBtn.setActiveItem(item);
+
+                return false;
+            }
+        });
+
+        /**
+         * Fire the onChangeLayout event
+         */
+        me.onChangeLayout(null, {
+            layout: displayTypeValue
+        });
+
+        grid.columns[1].setWidth(thumbnailSize + 10);
+        grid.selectedPreviewSize = thumbnailSize;
+
+        if (view.hasOwnProperty(displayTypeValue + 'ImageSizes')) {
+            storeData = view[displayTypeValue + 'ImageSizes'];
+
+            view.imageSize.reset();
+            view.imageSize.getStore().loadData(storeData);
+        }
+
+        view.imageSize.setValue(grid.selectedPreviewSize);
+
+        // ItemsPerPage
+        pageSizeCombo.store.each(function(item) {
+            if(item.raw.value == itemsPerPage) {
+                pageSizeCombo.reset();
+                pageSizeCombo.setValue(item.raw.name);
+
+                return false;
+            }
+        });
+    },
+
+    onSelectPerPage: function(combo) {
+        var me = this,
+            settingRecord = me.settingRecord;
+
+        settingRecord.set({
+            'itemsPerPage': parseInt(combo.getValue())
+        });
+        settingRecord.save();
     },
 
     moveMedias: function(view, medias) {
@@ -403,6 +498,7 @@ Ext.define('Shopware.apps.MediaManager.controller.Media', {
 
         if(view.deleteBtn) {
             view.deleteBtn.setDisabled(!selection.length);
+            view.replaceButton.setDisabled(!selection.length);
         }
 
         if(!selection.length) {
@@ -419,18 +515,38 @@ Ext.define('Shopware.apps.MediaManager.controller.Media', {
      * Event listener method which will be fired when the user clicks
      * on the `change layout` button.
      *
-     * The method sets the correct active item and shows / hides the
-     * preview size combobox.
+     * The method sets the correct active item.
      *
      * @param { Ext.button.Button } button - The clicked button
      * @param { Object } item - The configuration of the active layout
      * @returns { Void }
      */
     onChangeLayout: function(button, item) {
-        var me = this, view = me.getMediaView();
+        var me = this,
+            view = me.getMediaView(),
+            grid = me.getMediaGrid(),
+            storeData;
+
         view.selectedLayout = item.layout;
+        view.thumbnailSize = me.settingRecord.get(view.selectedLayout + 'ThumbnailSize');
+
+        me.settingRecord.set({
+            'displayType': item.layout
+        });
+
+        if (view.hasOwnProperty(view.selectedLayout + 'ImageSizes')) {
+            storeData = view[view.selectedLayout + 'ImageSizes'];
+
+            view.imageSize.getStore().on('datachanged', function() {
+                view.imageSize.setValue(view.thumbnailSize, false);
+            }, null, { single: true });
+
+            view.imageSize.getStore().loadData(storeData);
+        }
+
         view.cardContainer.getLayout().setActiveItem((item.layout === 'grid') ? 0 : 1);
-        view.imageSize[(item.layout === 'grid') ? 'hide' : 'show']();
+
+        me.settingRecord.save();
     },
 
     /**
@@ -462,23 +578,43 @@ Ext.define('Shopware.apps.MediaManager.controller.Media', {
      *          the selected item. Otherwise `void`
      */
     onChangePreviewSize: function(field, newValue, value) {
-        var me = this, view = me.getMediaGrid();
+        var me = this,
+            grid = me.getMediaGrid(),
+            view = me.getMediaView(),
+            displayType = me.settingRecord.get('displayType'),
+            iconSize;
 
         // Prevents the first event to re-render the list view
-        if(!value || newValue === value) {
+        if (!value || newValue === value) {
             return false;
         }
 
         // Cast the passed value to a number
-        view.selectedPreviewSize = ~~(1 * newValue);
+        iconSize = ~~(1 * newValue);
 
-        // Reload the store and resize the preview column
-        view.getStore().load({
-            callback: function() {
-                // We need to hard-code the preview column
-                view.columns[1].setWidth((view.selectedPreviewSize < 50) ? 50 : view.selectedPreviewSize + 10);
-            }
+        me.settingRecord.set({
+            [displayType + 'ThumbnailSize']: iconSize
         });
+
+        me.settingRecord.save();
+
+        //Change the thumbnail size for the table view, sadly we need to recreate the view.
+        view.thumbnailSize = iconSize;
+        view.mediaViewContainer.removeAll();
+
+        /* {if {acl_is_allowed privilege=upload}} */
+        view.mediaViewContainer.add(view.createDropZone());
+        /* {/if} */
+
+        view.mediaViewContainer.add(view.createMediaView());
+
+        // 1) Set the icon preview size on the grid
+        // 2) Refresh the view
+        // 3) Resize the first column to fit the new icon size
+        grid.selectedPreviewSize = iconSize;
+        grid.getView().refresh();
+        grid.columns[1].setWidth((iconSize < 50) ? 50 : iconSize + 10);
+
     }
 });
 //{/block}

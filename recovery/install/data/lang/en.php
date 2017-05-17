@@ -44,7 +44,7 @@ return [
     'language-selection_header' => 'Start installation',
     'language-selection_select_language' => 'Choose installer language',
     'language-selection_info_message' => 'This language selection applies only to the installation assistant. Once you finish installing Shopware, you will be able to configure multiple shop in different languages.',
-    'language-selection_welcome_message' => <<<EOT
+    'language-selection_welcome_message' => <<<'EOT'
 <p>
     You are only a few clicks away from being part of the big Shopware community,
     which consists of over 54000 online merchants worldwide.

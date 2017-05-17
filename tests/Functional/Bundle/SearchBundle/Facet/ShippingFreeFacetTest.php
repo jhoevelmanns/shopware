@@ -29,6 +29,9 @@ use Shopware\Bundle\StoreFrontBundle\Struct\ShopContext;
 use Shopware\Models\Category\Category;
 use Shopware\Tests\Functional\Bundle\StoreFrontBundle\TestCase;
 
+/**
+ * @group elasticSearch
+ */
 class ShippingFreeFacetTest extends TestCase
 {
     public function testShippingFree()

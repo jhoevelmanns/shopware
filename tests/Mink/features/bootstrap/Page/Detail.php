@@ -302,6 +302,17 @@ class Detail extends Page implements HelperSelectorInterface
         $elements['notificationSubmit']->press();
     }
 
+    public function openEvaluationSection()
+    {
+        $evaluationTab = $this->getSession()
+            ->getPage()
+            ->find('css', "a[data-tabname='rating']");
+
+        if ($evaluationTab) {
+            $evaluationTab->click();
+        }
+    }
+
     /**
      * @param ArticleEvaluation $articleEvaluations
      * @param $average

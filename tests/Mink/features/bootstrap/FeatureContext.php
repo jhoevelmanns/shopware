@@ -36,6 +36,7 @@ use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Behat\Testwork\Suite\Suite;
 use Behat\Testwork\Tester\Result\TestResult;
 use Doctrine\DBAL\Connection;
+use Shopware\Components\CacheManager;
 
 class FeatureContext extends SubContext implements SnippetAcceptingContext
 {
@@ -43,10 +44,8 @@ class FeatureContext extends SubContext implements SnippetAcceptingContext
      * @var array
      */
     protected $dirtyConfigElements;
-
     protected static $isPrepared = false;
     protected static $lastScenarioLine = 0;
-
     /**
      * @var Suite
      */
@@ -69,6 +68,8 @@ class FeatureContext extends SubContext implements SnippetAcceptingContext
 
     /**
      * @BeforeSuite
+     *
+     * @param BeforeSuiteScope $scope
      */
     public static function setup(BeforeSuiteScope $scope)
     {
@@ -77,6 +78,8 @@ class FeatureContext extends SubContext implements SnippetAcceptingContext
 
     /**
      * @BeforeScenario
+     *
+     * @param BeforeScenarioScope $scope
      */
     public function before(BeforeScenarioScope $scope)
     {
@@ -98,7 +101,7 @@ class FeatureContext extends SubContext implements SnippetAcceptingContext
      */
     public function deactivateCaptchas()
     {
-        $this->changeConfigValue('captchaColor', '');
+        $this->changeConfigValue('captchaMethod', 'nocaptcha');
     }
 
     /**
@@ -200,9 +203,12 @@ class FeatureContext extends SubContext implements SnippetAcceptingContext
 
     /**
      * @BeforeScenario @configChange
+     *
+     * @param ScenarioScope $scope
      */
     public function clearCache(ScenarioScope $scope = null)
     {
+        /** @var CacheManager $cacheManager */
         $cacheManager = $this->getService('shopware.cache_manager');
         $cacheManager->clearConfigCache();
         $cacheManager->clearTemplateCache();
@@ -240,6 +246,42 @@ class FeatureContext extends SubContext implements SnippetAcceptingContext
 
             return true;
         });
+    }
+
+    /**
+     * @BeforeScenario @noinfinitescrolling
+     */
+    public static function deactivateInfiniteScrolling()
+    {
+        /** @var Connection $dbal */
+        $dbal = Shopware()->Container()->get('dbal_connection');
+
+        $sql = "SET @elementId = (SELECT id FROM `s_core_templates_config_elements` WHERE `name` = 'infiniteScrolling');
+                INSERT INTO `s_core_templates_config_values` (`element_id`, `shop_id`, `value`)
+                VALUES (@elementId, '1', 'b:0;')
+                ON DUPLICATE KEY UPDATE `value` = 'b:0;';";
+
+        $dbal->query($sql);
+
+        self::clearTemplateCache();
+    }
+
+    /**
+     * @AfterScenario @noinfinitescrolling
+     */
+    public static function activateInfiniteScrolling()
+    {
+        /** @var Connection $dbal */
+        $dbal = Shopware()->Container()->get('dbal_connection');
+
+        $sql = "SET @elementId = (SELECT id FROM `s_core_templates_config_elements` WHERE `name` = 'infiniteScrolling');
+                INSERT INTO `s_core_templates_config_values` (`element_id`, `shop_id`, `value`)
+                VALUES (@elementId, '1', 'b:1;')
+                ON DUPLICATE KEY UPDATE `value` = 'b:1;';";
+
+        $dbal->query($sql);
+
+        self::clearTemplateCache();
     }
 
     private function prepare()
@@ -396,5 +438,14 @@ EOD;
         $filePath = $this->getService('kernel')->getRootdir() . '/build/logs/mink';
 
         $this->saveScreenshot(null, $filePath);
+    }
+
+    private static function clearTemplateCache()
+    {
+        /** @var CacheManager $cacheManager */
+        $cacheManager = Shopware()->Container()->get('shopware.cache_manager');
+        $cacheManager->clearConfigCache();
+        $cacheManager->clearTemplateCache();
+        $cacheManager->clearThemeCache();
     }
 }

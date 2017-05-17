@@ -294,7 +294,7 @@ Nordrhein-WestfalenDeutschland';
      *
      * @return Crawler
      */
-    private function doRequest($method = 'GET', $url, $data = [])
+    private function doRequest($method, $url, $data = [])
     {
         $this->reset();
 

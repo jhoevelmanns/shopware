@@ -61,7 +61,7 @@ class ProductAttributeFacet implements FacetInterface
     /**
      * @var string|null
      */
-    private $template = null;
+    private $template;
 
     /**
      * @param string        $field
@@ -72,7 +72,7 @@ class ProductAttributeFacet implements FacetInterface
      */
     public function __construct(
         $field,
-        $mode = self::MODE_VALUE_LIST_RESULT,
+        $mode,
         $formFieldName,
         $label,
         $template = null

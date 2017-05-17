@@ -41,6 +41,7 @@ class Shopware_Tests_Controllers_Backend_AnalyticsTest extends Enlight_Component
     private $orderNumber;
     private $articleDetailId;
     private $orderIds;
+    private $addressId;
 
     /**
      * Standard set up for every test - just disable auth
@@ -811,6 +812,26 @@ class Shopware_Tests_Controllers_Backend_AnalyticsTest extends Enlight_Component
             'countryID' => 2,
             'stateID' => 3,
         ]);
+
+        Shopware()->Db()->insert('s_user_addresses', [
+            'user_id' => $this->userId,
+            'company' => 'PHPUNIT',
+            'salutation' => 'mr',
+            'firstname' => '',
+            'lastname' => '',
+            'zipcode' => '',
+            'city' => '',
+            'country_id' => 2,
+            'state_id' => 3,
+        ]);
+        $this->addressId = Shopware()->Db()->lastInsertId();
+
+        Shopware()->Db()->update('s_user', [
+            'default_billing_address_id' => $this->addressId,
+            'default_shipping_address_id' => $this->addressId,
+        ], [
+            'id = ?' => $this->userId,
+        ]);
     }
 
     private function createArticle()
@@ -843,7 +864,7 @@ class Shopware_Tests_Controllers_Backend_AnalyticsTest extends Enlight_Component
         Shopware()->Db()->update(
             's_articles',
             ['main_detail_id' => $this->articleDetailId],
-                'id = ' . $this->articleId
+            'id = ' . $this->articleId
         );
     }
 
@@ -1046,6 +1067,7 @@ class Shopware_Tests_Controllers_Backend_AnalyticsTest extends Enlight_Component
     {
         if ($this->userId) {
             Shopware()->Db()->delete('s_user', 'id = ' . $this->userId);
+            Shopware()->Db()->delete('s_user_addresses', 'user_id = ' . $this->userId);
             Shopware()->Db()->delete('s_user_billingaddress', 'userID = ' . $this->userId);
             Shopware()->Db()->delete('s_order', 'userID = ' . $this->userId);
             Shopware()->Db()->delete('s_order_billingaddress', 'userID = ' . $this->userId);
@@ -1077,7 +1099,7 @@ class Shopware_Tests_Controllers_Backend_AnalyticsTest extends Enlight_Component
     {
         preg_match_all(
             '#[?&]([qp]|query|highlight|encquery|url|field-keywords|as_q|sucheall|satitle|KW)=([^&\$]+)#',
-                utf8_encode($url) . '&',
+            utf8_encode($url) . '&',
             $matches
         );
         if (empty($matches[0])) {
