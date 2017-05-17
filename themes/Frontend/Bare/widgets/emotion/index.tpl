@@ -96,43 +96,11 @@
 
                                 {strip}
                                 <div class="{$itemCls}" style="{$itemStyle}">
-
-                                    {block name="widgets/emotion/index/inner-element"}
-
-                                        {if $template == 'component_article'}
-                                            {include file="widgets/emotion/components/component_article.tpl"}
-
-                                        {elseif $template == 'component_article_slider'}
-                                            {include file="widgets/emotion/components/component_article_slider.tpl"}
-
-                                        {elseif $template == 'component_banner'}
-                                            {include file="widgets/emotion/components/component_banner.tpl"}
-
-                                        {elseif $template == 'component_banner_slider'}
-                                            {include file="widgets/emotion/components/component_banner_slider.tpl"}
-
-                                        {elseif $template == 'component_blog'}
-                                            {include file="widgets/emotion/components/component_blog.tpl"}
-
-                                        {elseif $template == 'component_category_teaser'}
-                                            {include file="widgets/emotion/components/component_category_teaser.tpl"}
-
-                                        {elseif $template == 'component_html'}
-                                            {include file="widgets/emotion/components/component_html.tpl"}
-
-                                        {elseif $template == 'component_iframe'}
-                                            {include file="widgets/emotion/components/component_iframe.tpl"}
-
-                                        {elseif $template == 'component_manufacturer_slider'}
-                                            {include file="widgets/emotion/components/component_manufacturer_slider.tpl"}
-
-                                        {elseif $template == 'component_youtube'}
-                                            {include file="widgets/emotion/components/component_youtube.tpl"}
-
-                                        {elseif "widgets/emotion/components/{$template}.tpl"|template_exists}
-                                            {include file="widgets/emotion/components/{$template}.tpl"}
-                                        {/if}
-                                    {/block}
+									{block name="widgets/emotion/index/inner-element"}
+										{if "widgets/emotion/components/{$template}.tpl"|template_exists}
+											{include file="widgets/emotion/components/{$template}.tpl"}
+										{/if}
+									{/block}
                                 </div>
                                 {/strip}
                             {/block}
